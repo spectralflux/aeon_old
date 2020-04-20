@@ -1,4 +1,4 @@
-package com.spectralflux.aeon.exception;
+package com.spectralflux.aeon.error;
 
 import com.spectralflux.aeon.scan.Token;
 
