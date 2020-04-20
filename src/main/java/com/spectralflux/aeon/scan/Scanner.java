@@ -44,6 +44,7 @@ public class Scanner {
             case '\n':
                 line++;
                 addToken(NEWLINE);
+                break;
             default:
                 if (isDigit(c)) {
                     // TODO add number handling
