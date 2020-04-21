@@ -1,6 +1,6 @@
 package com.spectralflux.aeon.error;
 
-import com.spectralflux.aeon.scan.Token;
+import com.spectralflux.aeon.interpreter.Token;
 
 public class RuntimeError extends RuntimeException {
 

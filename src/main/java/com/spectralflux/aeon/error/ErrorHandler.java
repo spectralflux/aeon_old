@@ -1,7 +1,7 @@
 package com.spectralflux.aeon.error;
 
-import com.spectralflux.aeon.scan.Token;
-import com.spectralflux.aeon.scan.TokenType;
+import com.spectralflux.aeon.interpreter.Token;
+import com.spectralflux.aeon.interpreter.TokenType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +27,7 @@ public class ErrorHandler {
         hadError = true;
     }
 
-    private void error(Token token, String message) {
+    public void error(Token token, String message) {
         if (token.getType() == TokenType.EOF) {
             report(token.getLine(), " at end", message);
         } else {
@@ -35,7 +35,7 @@ public class ErrorHandler {
         }
     }
 
-    private void runtimeError(RuntimeError error) {
+    public void runtimeError(RuntimeError error) {
         System.err.println(error.getMessage() +
                 "\n[line " + error.getToken().getLine() + "]");
         hadRuntimeError = true;

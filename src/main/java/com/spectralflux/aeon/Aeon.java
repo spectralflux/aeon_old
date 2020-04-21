@@ -1,10 +1,7 @@
 package com.spectralflux.aeon;
 
 import com.spectralflux.aeon.error.ErrorHandler;
-import com.spectralflux.aeon.error.RuntimeError;
-import com.spectralflux.aeon.scan.Scanner;
-import com.spectralflux.aeon.scan.Token;
-import com.spectralflux.aeon.scan.TokenType;
+import com.spectralflux.aeon.interpreter.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,6 +12,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
+import com.spectralflux.aeon.syntax.statement.Stmt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,6 +23,7 @@ public class Aeon {
 
     private static final Logger logger = LoggerFactory.getLogger(Aeon.class);
     private static ErrorHandler errorHandler = new ErrorHandler();
+    private static final Interpreter interpreter = new Interpreter(errorHandler);
 
     public static void main(String... args) {
         logger.info("Aeon Language");
@@ -79,25 +78,24 @@ public class Aeon {
     private static void run(String source) {
         Scanner scanner = new Scanner(errorHandler, source);
         List<Token> tokens = scanner.scanTokens();
-    /*
 
-    Parser parser = new Parser(tokens);
-    List<Stmt> statements = parser.parse();
+        Parser parser = new Parser(errorHandler, tokens);
+        List<Stmt> statements = parser.parse();
 
-    // Stop if there was a syntax error.
-    if (hadError) {
-      return;
-    }
+        // Stop if there was a syntax error.
+        if (errorHandler.hadError()) {
+            return;
+        }
 
-    Resolver resolver = new Resolver(interpreter);
-    resolver.resolve(statements);
+        Resolver resolver = new Resolver(errorHandler, interpreter);
+        resolver.resolve(statements);
 
-    // Stop if there was a resolution error.
-    if (hadError) {
-      return;
-    }
+        // Stop if there was a resolution error.
+        if (errorHandler.hadError()) {
+            return;
+        }
 
-    interpreter.interpret(statements);*/
+        interpreter.interpret(statements);
     }
 
 }

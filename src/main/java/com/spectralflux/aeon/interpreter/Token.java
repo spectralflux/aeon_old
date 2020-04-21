@@ -1,4 +1,4 @@
-package com.spectralflux.aeon.scan;
+package com.spectralflux.aeon.interpreter;
 
 public class Token {
 

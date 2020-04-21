@@ -1,4 +1,4 @@
-package com.spectralflux.aeon.scan;
+package com.spectralflux.aeon.interpreter;
 
 import com.spectralflux.aeon.error.ErrorHandler;
 
@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.spectralflux.aeon.scan.TokenType.*;
+import static com.spectralflux.aeon.interpreter.TokenType.*;
 
 /**
  * Could have called this the Lexer, but that's not technically what it's doing...
