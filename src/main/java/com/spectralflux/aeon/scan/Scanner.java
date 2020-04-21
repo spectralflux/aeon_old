@@ -9,6 +9,9 @@ import java.util.Map;
 
 import static com.spectralflux.aeon.scan.TokenType.*;
 
+/**
+ * Could have called this the Lexer, but that's not technically what it's doing...
+ */
 public class Scanner {
 
     private final ErrorHandler errorHandler;
@@ -41,14 +44,22 @@ public class Scanner {
     private void scanToken() {
         char c = advance();
         switch (c) {
+            case '(':
+                addToken(LEFT_PAREN);
+                break;
+            case ')':
+                addToken(RIGHT_PAREN);
+                break;
+            case '\'':
+                string();
+                break;
             case '\n':
                 line++;
                 addToken(NEWLINE);
                 break;
             default:
                 if (isDigit(c)) {
-                    // TODO add number handling
-                    //number();
+                    number();
                 } else if (isAlpha(c)) {
                     identifier();
                 } else {
@@ -71,6 +82,69 @@ public class Scanner {
             return '\0';
         }
         return source.charAt(current);
+    }
+
+    /**
+     * Could have made peek take an argument for lookahead size, but we don't want to encourage
+     * arbitrary lookahead in lox so we'll stick with two methods here.
+     */
+    private char peekNext() {
+        if (current + 1 >= source.length()) {
+            return '\0';
+        }
+        return source.charAt(current + 1);
+    }
+
+    private void string() {
+        while (peek() != '\'' && !isAtEnd()) {
+            if (peek() == '\n') {
+                line++;
+            }
+            advance();
+        }
+
+        // Unterminated string.
+        if (isAtEnd()) {
+            errorHandler.error(line, "Unterminated string.");
+            return;
+        }
+
+        // The closing '.
+        advance();
+
+        // Trim the surrounding quotes.
+        String value = source.substring(start + 1, current - 1);
+        addToken(STRING, value);
+    }
+
+    private void number() {
+        boolean isFloat = false;
+
+        while (isDigit(peek())) {
+            advance();
+        }
+
+        // Look for a fractional part.
+        if (peek() == '.' && isDigit(peekNext())) {
+            // we've found a float!
+            isFloat = true;
+
+            // Consume the "."
+            advance();
+
+            while (isDigit(peek())) {
+                advance();
+            }
+        }
+
+        if (isFloat) {
+            // I want higher precision floats than the Float type in Java provides, so making this a Double.
+            addToken(FLOAT,
+                    Double.parseDouble(source.substring(start, current)));
+        } else {
+            addToken(INTEGER,
+                    Integer.parseInt(source.substring(start, current)));
+        }
     }
 
     private void identifier() {
