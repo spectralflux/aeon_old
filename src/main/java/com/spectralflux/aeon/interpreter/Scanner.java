@@ -21,8 +21,6 @@ public class Scanner {
     private int start = 0;
     private int current = 0;
     private int line = 1;
-    private int indent = 0;
-    private boolean isTextStarted = false;
 
     public Scanner(ErrorHandler errorHandler, String source) {
         this.errorHandler = errorHandler;
@@ -98,31 +96,12 @@ public class Scanner {
     }
 
     private void addToken(TokenType type) {
-        if(type == NEWLINE) {
-            resetIndent();
-        } else if(type != SPACE && type != TAB) {
-            isTextStarted = true;
-        }
-
-        if((type == SPACE || type == TAB) && !isTextStarted) {
-            if (type == SPACE) {
-                indent += 1;
-            } else {
-                indent += 4; // TODO check this, see how python does it
-            }
-        }
-
         addToken(type, null);
     }
 
     private void addToken(TokenType type, Object literal) {
         String text = source.substring(start, current);
         tokens.add(new Token(type, text, literal, line));
-    }
-
-    private void resetIndent() {
-        indent = 0;
-        isTextStarted = false;
     }
 
     private char peek() {

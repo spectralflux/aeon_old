@@ -1,5 +1,4 @@
 fn my_function():
-    let x as string = 'You'
-    print('Hello, ' + x)
+    print('Hello, ')
 
 my_function()

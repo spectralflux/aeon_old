@@ -6,6 +6,8 @@ import com.spectralflux.aeon.syntax.expression.Expr;
 import com.spectralflux.aeon.syntax.statement.Expression;
 import com.spectralflux.aeon.syntax.statement.Function;
 import com.spectralflux.aeon.syntax.statement.Stmt;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,24 +16,46 @@ import static com.spectralflux.aeon.interpreter.TokenType.*;
 
 public class Parser {
 
+    private static final Logger logger = LoggerFactory.getLogger(Parser.class);
+
     private final List<Token> tokens;
     private final ErrorHandler errorHandler;
     private int current;
+
+    private int previousIndent;
+    private int indent;
 
     public Parser(ErrorHandler errorHandler, List<Token> tokens) {
         this.errorHandler = errorHandler;
         this.tokens = tokens;
         this.current = 0;
+
+        this.indent = 0;
+        this.previousIndent = 0;
     }
 
     public List<Stmt> parse() {
         List<Stmt> statements = new ArrayList<>();
 
         while (!isAtEnd()) {
+            consumeWhitespace();
             statements.add(declaration());
         }
 
         return statements;
+    }
+
+    private void consumeWhitespace() {
+        while( check(SPACE) || check(TAB)) {
+            if(check(SPACE)) {
+                indent += 1;
+                consume(SPACE, "Expect space character.");
+            } else {
+                indent += 4; // TODO check how python does this...
+                consume(TAB, "Expect tab character.");
+            }
+        }
+        logger.debug(String.format("indent=%s, previousIndent=%s ", indent, previousIndent));
     }
 
     private Stmt declaration() {
@@ -74,9 +98,10 @@ public class Parser {
     private List<Stmt> block() {
         List<Stmt> statements = new ArrayList<>();
 
-        // TODO add logic to add declarations to statements list
-
-        // TODO add logic to detect de-indenting to signify end of block.
+        // while we are still indented, we are still in the block
+        while(previousIndent <= indent) {
+            statements.add(declaration());
+        }
 
         return statements;
     }
@@ -132,10 +157,19 @@ public class Parser {
 
     private Token consume(TokenType type, String message) {
         if (check(type)) {
+            if(type == NEWLINE) {
+                resetLine();
+            }
+
             return advance();
         }
 
         throw error(peek(), message);
+    }
+
+    private void resetLine() {
+        previousIndent = indent;
+        indent = 0;
     }
 
     private boolean isAtEnd() {
