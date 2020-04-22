@@ -71,13 +71,15 @@ public class Aeon {
 
         while (!Thread.currentThread().isInterrupted()) {
             System.out.print("> ");
-            run(reader.readLine());
+            run(reader.readLine()  + "\n");
         }
     }
 
     private static void run(String source) {
         Scanner scanner = new Scanner(errorHandler, source);
         List<Token> tokens = scanner.scanTokens();
+
+        tokens.forEach(token -> logger.debug(token.toString()));
 
         Parser parser = new Parser(errorHandler, tokens);
         List<Stmt> statements = parser.parse();

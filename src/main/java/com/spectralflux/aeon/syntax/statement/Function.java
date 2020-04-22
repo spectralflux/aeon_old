@@ -10,7 +10,7 @@ public class Function extends Stmt {
     final List<Token> params;
     final List<Stmt> body;
 
-    Function(Token name, List<Token> params, List<Stmt> body) {
+    public Function(Token name, List<Token> params, List<Stmt> body) {
         this.name = name;
         this.params = params;
         this.body = body;
