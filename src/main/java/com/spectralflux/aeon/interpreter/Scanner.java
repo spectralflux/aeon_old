@@ -21,11 +21,14 @@ public class Scanner {
     private int start = 0;
     private int current = 0;
     private int line = 1;
+    private int indent = 0;
+    private boolean isTextStarted = false;
 
     public Scanner(ErrorHandler errorHandler, String source) {
         this.errorHandler = errorHandler;
         this.source = source;
         keywords = new HashMap<>() {{
+            // TODO add all keywords
             put("let", LET);
         }};
     }
@@ -44,12 +47,38 @@ public class Scanner {
     private void scanToken() {
         char c = advance();
         switch (c) {
+            case ' ':
+                addToken(SPACE);
+                break;
+            case '\t':
+                addToken(TAB);
+                break;
             case '(':
                 addToken(LEFT_PAREN);
                 break;
             case ')':
                 addToken(RIGHT_PAREN);
                 break;
+            case ':':
+                addToken(COLON);
+                break;
+            case ',':
+                addToken(COMMA);
+                break;
+            case '.':
+                addToken(DOT);
+                break;
+            case '-':
+                addToken(MINUS);
+                break;
+            case '+':
+                addToken(PLUS);
+                break;
+            case '*':
+                addToken(STAR);
+                break;
+            case '/':
+                addToken(SLASH);
             case '\'':
                 string();
                 break;
@@ -69,12 +98,31 @@ public class Scanner {
     }
 
     private void addToken(TokenType type) {
+        if(type == NEWLINE) {
+            resetIndent();
+        } else if(type != SPACE && type != TAB) {
+            isTextStarted = true;
+        }
+
+        if((type == SPACE || type == TAB) && !isTextStarted) {
+            if (type == SPACE) {
+                indent += 1;
+            } else {
+                indent += 4; // TODO check this, see how python does it
+            }
+        }
+
         addToken(type, null);
     }
 
     private void addToken(TokenType type, Object literal) {
         String text = source.substring(start, current);
         tokens.add(new Token(type, text, literal, line));
+    }
+
+    private void resetIndent() {
+        indent = 0;
+        isTextStarted = false;
     }
 
     private char peek() {

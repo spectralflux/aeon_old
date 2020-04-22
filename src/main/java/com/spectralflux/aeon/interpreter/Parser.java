@@ -55,7 +55,7 @@ public class Parser {
         if (!check(RIGHT_PAREN)) {
             do {
                 if (parameters.size() >= 255) {
-                    error(peek(), "Cannot have more than 255 parameters.");
+                    throw error(peek(), "Cannot have more than 255 parameters.");
                 }
 
                 parameters.add(consume(IDENTIFIER, "Expect parameter name."));
@@ -64,6 +64,9 @@ public class Parser {
         consume(RIGHT_PAREN, "Expect ')' after parameters.");
 
         consume(COLON, "Expect ':' before " + kind + " body.");
+
+        consume(NEWLINE, "Expect new line before " + kind + " body.");
+
         List<Stmt> body = block();
         return new Function(name, parameters, body);
     }
