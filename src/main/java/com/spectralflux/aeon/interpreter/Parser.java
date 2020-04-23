@@ -2,9 +2,10 @@ package com.spectralflux.aeon.interpreter;
 
 import com.spectralflux.aeon.error.ErrorHandler;
 import com.spectralflux.aeon.error.ParseError;
-import com.spectralflux.aeon.syntax.expression.Expr;
+import com.spectralflux.aeon.syntax.expression.*;
 import com.spectralflux.aeon.syntax.statement.Expression;
 import com.spectralflux.aeon.syntax.statement.Function;
+import com.spectralflux.aeon.syntax.statement.Let;
 import com.spectralflux.aeon.syntax.statement.Stmt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +25,7 @@ public class Parser {
 
     private int previousIndent;
     private int indent;
+    private boolean isTextStarted;
 
     public Parser(ErrorHandler errorHandler, List<Token> tokens) {
         this.errorHandler = errorHandler;
@@ -32,6 +34,7 @@ public class Parser {
 
         this.indent = 0;
         this.previousIndent = 0;
+        this.isTextStarted = true;
     }
 
     public List<Stmt> parse() {
@@ -40,21 +43,28 @@ public class Parser {
         while (!isAtEnd()) {
             consumeWhitespace();
             statements.add(declaration());
+            isTextStarted = false; // TODO this wont work for multiline statements...
         }
 
         return statements;
     }
 
     private void consumeWhitespace() {
-        while( check(SPACE) || check(TAB)) {
+        while(check(SPACE) || check(TAB)) {
             if(check(SPACE)) {
-                indent += 1;
+                if (!isTextStarted) {
+                    indent += 1;
+                }
                 consume(SPACE, "Expect space character.");
             } else {
-                indent += 4; // TODO check how python does this...
+                if (!isTextStarted) {
+                    indent += 4; // TODO check how python does this...
+                }
                 consume(TAB, "Expect tab character.");
             }
         }
+
+        isTextStarted = true;
         logger.debug(String.format("indent=%s, previousIndent=%s ", indent, previousIndent));
     }
 
@@ -65,11 +75,30 @@ public class Parser {
                 return function("function");
             }
 
+            if (match(LET)) {
+                return letDeclaration();
+            }
+
             return statement();
         } catch (ParseError error) {
             synchronize();
             return null;
         }
+    }
+
+    private Stmt letDeclaration() {
+        consumeWhitespace();
+        Token name = consume(IDENTIFIER, "Expect variable name.");
+        consumeWhitespace();
+
+        Expr initializer = null;
+        if (match(EQUAL)) {
+            consumeWhitespace();
+            initializer = expression();
+        }
+
+        consume(NEWLINE, "Expect newline after variable declaration.");
+        return new Let(name, initializer);
     }
 
     private Function function(String kind) {
@@ -125,9 +154,37 @@ public class Parser {
     }
 
     private Expr assignment() {
-        // TODO need blocks for picking expressions here, then return the correct type of expression.
-        return new Expr() {
+        // TODO change to or() so it goes down AST instead of returning literals;
+        Expr expr = new Literal(advance().getLiteral());
+
+        if (match(EQUAL)) {
+            Token equals = previous();
+            Expr value = assignment();
+
+            if (expr instanceof Variable) {
+                Token name = ((Variable) expr).getName();
+                return new Assign(name, value);
+            } else if (expr instanceof Get) {
+                Get get = (Get) expr;
+                return new Set(get.getObject(), get.getName(), value);
+            }
+
+            throw error(equals, "Invalid assignment target.");
+        }
+
+        return expr;
+    }
+
+    private Expr or() {
+        // TODO complete
+        Expr expr = new Expr() {
+            @Override
+            public <R> R accept(ExprVisitor<R> visitor) {
+                return null;
+            }
         };
+
+        return expr;
     }
 
     private boolean match(TokenType... types) {
@@ -205,4 +262,5 @@ public class Parser {
         errorHandler.error(token, message);
         return new ParseError();
     }
+
 }

@@ -75,6 +75,9 @@ public class Scanner {
             case '*':
                 addToken(STAR);
                 break;
+            case '=':
+                addToken(EQUAL);
+                break;
             case '/':
                 addToken(SLASH);
             case '\'':

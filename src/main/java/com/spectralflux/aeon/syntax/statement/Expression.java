@@ -11,7 +11,7 @@ public class Expression extends Stmt {
     }
 
     @Override
-    <R> R accept(StmtVisitor<R> visitor) {
+    public <R> R accept(StmtVisitor<R> visitor) {
         return visitor.visitExpressionStmt(this);
     }
 

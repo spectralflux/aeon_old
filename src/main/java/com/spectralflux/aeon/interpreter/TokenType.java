@@ -8,6 +8,10 @@ public enum TokenType {
     LEFT_PAREN, RIGHT_PAREN, NEWLINE, COLON, COMMA, DOT,
     MINUS, PLUS, SLASH, STAR,
 
+    // One or two character tokens.
+    EQUAL, GREATER, LESS,
+    GREATER_EQUAL, LESS_EQUAL,
+
     // Literals.
     IDENTIFIER, STRING, INTEGER, FLOAT,
 
