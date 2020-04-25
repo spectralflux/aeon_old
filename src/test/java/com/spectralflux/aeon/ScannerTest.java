@@ -1,6 +1,8 @@
-package com.spectralflux.aeon.interpreter;
+package com.spectralflux.aeon;
 
 import com.spectralflux.aeon.error.ErrorHandler;
+import com.spectralflux.aeon.interpreter.Scanner;
+import com.spectralflux.aeon.interpreter.Token;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

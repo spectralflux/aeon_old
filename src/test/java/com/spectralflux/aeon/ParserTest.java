@@ -1,6 +1,8 @@
-package com.spectralflux.aeon.interpreter;
+package com.spectralflux.aeon;
 
 import com.spectralflux.aeon.error.ErrorHandler;
+import com.spectralflux.aeon.interpreter.Parser;
+import com.spectralflux.aeon.interpreter.Token;
 import com.spectralflux.aeon.syntax.expression.Literal;
 import com.spectralflux.aeon.syntax.statement.Let;
 import com.spectralflux.aeon.syntax.statement.Stmt;
