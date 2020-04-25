@@ -20,6 +20,7 @@ public class ExamplesTest {
   private ErrorHandler errorHandler;
   private List<String> exampleFiles = new ArrayList<>() {{
     add("assignment.aeon");
+    add("simple_function.aeon");
   }};
 
   @Test

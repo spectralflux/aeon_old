@@ -65,6 +65,10 @@ public class Scanner {
         char c = advance();
 
         switch (c) {
+            case ' ':
+            case '\t':
+                // we've already handled these at the start of the line, ignore all others
+                break;
             case '(':
                 addToken(LEFT_PAREN);
                 break;
