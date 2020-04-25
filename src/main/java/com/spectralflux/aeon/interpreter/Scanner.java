@@ -22,6 +22,8 @@ public class Scanner {
     private int current = 0;
     private int line = 1;
 
+    private boolean isTextStarted = false;
+
     public Scanner(ErrorHandler errorHandler, String source) {
         this.errorHandler = errorHandler;
         this.source = source;
@@ -43,14 +45,26 @@ public class Scanner {
     }
 
     private void scanToken() {
-        char c = advance();
-        switch (c) {
-            case ' ':
+        // for any line, add indentation first
+        while (!isTextStarted) {
+            char indentChar = peek();
+            if (indentChar != ' ' && indentChar != '\t') {
+                isTextStarted = true;
+                break;
+            } else if(indentChar == ' ') {
+                advance();
                 addToken(SPACE);
-                break;
-            case '\t':
+                start = current;
+            } else {
+                advance();
                 addToken(TAB);
-                break;
+                start = current;
+            }
+        }
+
+        char c = advance();
+
+        switch (c) {
             case '(':
                 addToken(LEFT_PAREN);
                 break;
@@ -84,7 +98,7 @@ public class Scanner {
                 string();
                 break;
             case '\n':
-                line++;
+                incrementLine();
                 addToken(NEWLINE);
                 break;
             default:
@@ -123,6 +137,11 @@ public class Scanner {
             return '\0';
         }
         return source.charAt(current + 1);
+    }
+
+    private void incrementLine() {
+        line++;
+        isTextStarted = false;
     }
 
     private void string() {

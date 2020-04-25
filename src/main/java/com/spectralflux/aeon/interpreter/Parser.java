@@ -52,15 +52,10 @@ public class Parser {
     private void consumeWhitespace() {
         while(check(SPACE) || check(TAB)) {
             if(check(SPACE)) {
-                if (!isTextStarted) {
-                    indent += 1;
-                }
-                consume(SPACE, "Expect space character.");
+              consume(SPACE, "Expect space character.");
             } else {
-                if (!isTextStarted) {
-                    indent += 4; // TODO check how python does this...
-                }
-                consume(TAB, "Expect tab character.");
+              indent += 4; // TODO check how python does this...
+              consume(TAB, "Expect tab character.");
             }
         }
 
@@ -87,13 +82,10 @@ public class Parser {
     }
 
     private Stmt letDeclaration() {
-        consumeWhitespace();
         Token name = consume(IDENTIFIER, "Expect variable name.");
-        consumeWhitespace();
 
         Expr initializer = null;
         if (match(EQUAL)) {
-            consumeWhitespace();
             initializer = expression();
         }
 

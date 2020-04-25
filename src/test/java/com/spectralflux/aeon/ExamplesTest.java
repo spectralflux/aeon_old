@@ -1,5 +1,7 @@
 package com.spectralflux.aeon;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
 import com.spectralflux.aeon.error.ErrorHandler;
 import com.spectralflux.aeon.interpreter.Parser;
 import com.spectralflux.aeon.interpreter.Scanner;
@@ -11,7 +13,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.io.IOUtils;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class ExamplesTest {
@@ -21,16 +22,13 @@ public class ExamplesTest {
     add("assignment.aeon");
   }};
 
-  @BeforeEach
-  void setup() {
-    errorHandler = new ErrorHandler();
-  }
-
   @Test
   void runExamples() {
     ClassLoader classLoader = getClass().getClassLoader();
 
     exampleFiles.forEach(resourceName -> {
+
+      errorHandler = new ErrorHandler();
       try (InputStream inputStream = classLoader.getResourceAsStream(resourceName)) {
 
         String source = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
@@ -50,6 +48,9 @@ public class ExamplesTest {
 
         statements.forEach(System.out::println);
         System.out.println("-------------------------------");
+
+        assertFalse(errorHandler.hadError());
+        assertFalse(errorHandler.hadRuntimeError());
 
       } catch (IOException e) {
         e.printStackTrace();
