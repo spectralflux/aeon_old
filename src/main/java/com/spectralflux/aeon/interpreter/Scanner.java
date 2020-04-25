@@ -40,6 +40,11 @@ public class Scanner {
             scanToken();
         }
 
+        // need one more newline if there wasn't one added at the end.
+        if (tokens.get(tokens.size() - 1).getType() != NEWLINE) {
+            tokens.add(new Token(NEWLINE, "\n", null, line));
+        }
+
         tokens.add(new Token(EOF, "", null, line));
         return tokens;
     }
