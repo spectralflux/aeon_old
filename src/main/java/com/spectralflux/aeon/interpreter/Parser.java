@@ -25,7 +25,6 @@ public class Parser {
 
     private int previousIndent;
     private int indent;
-    private boolean isTextStarted;
 
     public Parser(ErrorHandler errorHandler, List<Token> tokens) {
         this.errorHandler = errorHandler;
@@ -34,16 +33,14 @@ public class Parser {
 
         this.indent = 0;
         this.previousIndent = 0;
-        this.isTextStarted = true;
     }
 
     public List<Stmt> parse() {
         List<Stmt> statements = new ArrayList<>();
 
         while (!isAtEnd()) {
-            consumeWhitespace();
+            //consumeWhitespace();
             statements.add(declaration());
-            isTextStarted = false; // TODO this wont work for multiline statements...
         }
 
         return statements;
@@ -59,7 +56,6 @@ public class Parser {
             }
         }
 
-        isTextStarted = true;
         logger.debug(String.format("indent=%s, previousIndent=%s ", indent, previousIndent));
     }
 
@@ -206,11 +202,13 @@ public class Parser {
 
     private Token consume(TokenType type, String message) {
         if (check(type)) {
+            Token next = advance();
+
             if(type == NEWLINE) {
                 resetLine();
             }
 
-            return advance();
+            return next;
         }
 
         throw error(peek(), message);
@@ -219,6 +217,18 @@ public class Parser {
     private void resetLine() {
         previousIndent = indent;
         indent = 0;
+
+        while(check(SPACE) || check(TAB)) {
+            if(check(SPACE)) {
+                consume(SPACE, "Space expected.");
+                indent += 1;
+            } else {
+                consume(TAB, "Tab expected.");
+                indent += 4;
+            }
+        }
+
+        logger.debug(String.format("indent=%s, previousIndent=%s ", indent, previousIndent));
     }
 
     private boolean isAtEnd() {

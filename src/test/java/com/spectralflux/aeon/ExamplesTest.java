@@ -21,6 +21,7 @@ public class ExamplesTest {
   private List<String> exampleFiles = new ArrayList<>() {{
     add("assignment.aeon");
     add("simple_function.aeon");
+    add("hello_world.aeon");
   }};
 
   @Test

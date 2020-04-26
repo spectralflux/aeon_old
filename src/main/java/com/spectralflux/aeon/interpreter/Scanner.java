@@ -30,6 +30,7 @@ public class Scanner {
         keywords = new HashMap<>() {{
             // TODO add all keywords
             put("let", LET);
+            put("fn", FN);
         }};
     }
 
