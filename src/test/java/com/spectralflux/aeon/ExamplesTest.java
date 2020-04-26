@@ -19,9 +19,9 @@ public class ExamplesTest {
 
   private ErrorHandler errorHandler;
   private List<String> exampleFiles = new ArrayList<>() {{
-    add("assignment.aeon");
-    add("simple_function.aeon");
-    add("hello_world.aeon");
+    add("examples/assignment.aeon");
+    add("examples/simple_function.aeon");
+    add("examples/hello_world.aeon");
   }};
 
   @Test
