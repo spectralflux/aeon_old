@@ -6,17 +6,21 @@ public enum TokenType {
 
     // Single-character tokens.
     LEFT_PAREN, RIGHT_PAREN, NEWLINE, COLON, COMMA, DOT,
-    MINUS, PLUS, SLASH, STAR,
+    MINUS, PLUS, SLASH, STAR, BANG,
 
     // One or two character tokens.
     EQUAL, GREATER, LESS,
     GREATER_EQUAL, LESS_EQUAL,
+    BANG_EQUAL, EQUAL_EQUAL,
 
     // Literals.
     IDENTIFIER, STRING, INTEGER, FLOAT,
 
     //Keywords
-    LET, FN, IS, NOT, OR, AND, IF, ELSE, RETURN, TRUE, FALSE, FOR, IN, AS,
+    LET, FN, OR, AND, IF, ELSE, RETURN, TRUE, FALSE, FOR, IN, AS,
+
+    // TODO identity keywords need special treatment
+    IS, NOT,
 
     EOF
 }

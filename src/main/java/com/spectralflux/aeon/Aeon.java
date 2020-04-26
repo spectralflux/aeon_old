@@ -26,7 +26,6 @@ public class Aeon {
     private static final Interpreter interpreter = new Interpreter(errorHandler);
 
     public static void main(String... args) {
-        logger.info("Aeon Language");
         Thread runThread = new Thread(() -> {
 
             try {

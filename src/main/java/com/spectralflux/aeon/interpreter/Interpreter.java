@@ -5,12 +5,16 @@ import com.spectralflux.aeon.error.ErrorHandler;
 import com.spectralflux.aeon.error.RuntimeError;
 import com.spectralflux.aeon.lib.Print;
 import com.spectralflux.aeon.syntax.expression.Assign;
+import com.spectralflux.aeon.syntax.expression.Binary;
 import com.spectralflux.aeon.syntax.expression.Call;
 import com.spectralflux.aeon.syntax.expression.Expr;
 import com.spectralflux.aeon.syntax.expression.ExprVisitor;
 import com.spectralflux.aeon.syntax.expression.Get;
+import com.spectralflux.aeon.syntax.expression.Grouping;
 import com.spectralflux.aeon.syntax.expression.Literal;
+import com.spectralflux.aeon.syntax.expression.Logical;
 import com.spectralflux.aeon.syntax.expression.Set;
+import com.spectralflux.aeon.syntax.expression.Unary;
 import com.spectralflux.aeon.syntax.expression.Variable;
 import com.spectralflux.aeon.syntax.statement.Expression;
 import com.spectralflux.aeon.syntax.statement.Function;
@@ -101,12 +105,6 @@ public class Interpreter implements ExprVisitor<Object>, StmtVisitor<Void> {
   }
 
   @Override
-  public Void visitExpressionStmt(Expression stmt) {
-    evaluate(stmt.getExpression());
-    return null;
-  }
-
-  @Override
   public Object visitVariableExpr(Variable expr) {
     return lookUpVariable(expr.getName(), expr);
   }
@@ -144,6 +142,32 @@ public class Interpreter implements ExprVisitor<Object>, StmtVisitor<Void> {
 
   @Override
   public Void visitLetStmt(Let stmt) {
+    return null;
+  }
+
+  @Override
+  public Object visitLogicalExpr(Logical expr) {
+    return null;
+  }
+
+  @Override
+  public Object visitBinaryExpr(Binary expr) {
+    return null;
+  }
+
+  @Override
+  public Object visitUnaryExpr(Unary expr) {
+    return null;
+  }
+
+  @Override
+  public Object visitGroupingExpr(Grouping expr) {
+    return null;
+  }
+
+  @Override
+  public Void visitExpressionStmt(Expression stmt) {
+    evaluate(stmt.getExpression());
     return null;
   }
 }
