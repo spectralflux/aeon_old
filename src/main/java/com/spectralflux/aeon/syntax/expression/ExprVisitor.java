@@ -6,4 +6,5 @@ public interface ExprVisitor<R> {
     R visitSetExpr(Set expr);
     R visitVariableExpr(Variable expr);
     R visitAssignExpr(Assign expr);
+    R visitCallExpr(Call expr);
 }
