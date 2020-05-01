@@ -95,6 +95,17 @@ public class Scanner {
           if (isAtEnd()) {
             errorHandler.error(line, "Unterminated multiline comment.");
           }
+
+          // consume comment end
+          advance();
+          advance();
+
+          if (peek() == '\n') {
+            advance();
+          } else {
+            errorHandler.error(line, "Multiline comment must terminate with newline.");
+          }
+
         } else {
           while (peek() != '\n' && !isAtEnd()) {
             advance();
