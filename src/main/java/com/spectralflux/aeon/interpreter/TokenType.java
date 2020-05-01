@@ -19,7 +19,7 @@ public enum TokenType {
     //Keywords
     LET, FN, OR, AND, IF, ELSE, RETURN, TRUE, FALSE, FOR, IN, AS,
 
-    // TODO identity keywords need special treatment
+    // TODO identity keywords need special treatment, this is done poorly in python so do i need these?
     IS, NOT,
 
     EOF

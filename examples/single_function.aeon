@@ -1,4 +1,4 @@
 fn my_function():
-    print('Hello, ')
+  print('Hello')
 
 my_function()

@@ -22,6 +22,7 @@ public class ExamplesTest {
     add("examples/assignment.aeon");
     add("examples/simple_function.aeon");
     add("examples/hello_world.aeon");
+    add("examples/assign_and_use.aeon");
   }};
 
   @Test

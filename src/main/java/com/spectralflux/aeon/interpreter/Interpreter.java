@@ -81,6 +81,93 @@ public class Interpreter implements ExprVisitor<Object>, StmtVisitor<Void> {
   }
 
   @Override
+  public Object visitGroupingExpr(Grouping expr) {
+    return evaluate(expr.getExpression());
+  }
+
+  @Override
+  public Object visitUnaryExpr(Unary expr) {
+    Object right = evaluate(expr.getRight());
+
+    switch (expr.getOperator().getType()) {
+      case BANG:
+        return !isTruthy(right);
+      case MINUS:
+        if (right instanceof Integer) {
+          return -(int) right;
+        } else {
+          return -(double) right;
+        }
+    }
+
+    // Unreachable.
+    return null;
+  }
+
+  @Override
+  public Object visitBinaryExpr(Binary expr) {
+    Object left = evaluate(expr.getLeft());
+    Object right = evaluate(expr.getRight());
+
+    switch (expr.getOperator().getType()) {
+      case GREATER:
+        checkNumberOperands(expr.getOperator(), left, right);
+        return (double) left > (double) right;
+      case GREATER_EQUAL:
+        checkNumberOperands(expr.getOperator(), left, right);
+        return (double) left >= (double) right;
+      case LESS:
+        checkNumberOperands(expr.getOperator(), left, right);
+        return (double) left < (double) right;
+      case LESS_EQUAL:
+        checkNumberOperands(expr.getOperator(), left, right);
+        return (double) left <= (double) right;
+      case MINUS:
+        checkNumberOperands(expr.getOperator(), left, right);
+        return (double) left - (double) right;
+      case PLUS:
+        if (left instanceof Double && right instanceof Double) {
+          return (double) left + (double) right;
+        }
+
+        if (left instanceof Integer && right instanceof Integer) {
+          return (int) left + (int) right;
+        }
+
+        if (left instanceof String && right instanceof String) {
+          return (String) left + (String) right;
+        }
+
+        throw new RuntimeError(expr.getOperator(),
+            "Operands must be two integers, two floats, or two strings.");
+      case SLASH:
+        checkNumberOperands(expr.getOperator(), left, right);
+        if (right.equals(0.0) || right.equals(0)) {
+          throw new RuntimeError(expr.getOperator(), "Cannot divide by zero.");
+        }
+        if (left instanceof Integer && right instanceof Integer) {
+          return (int) left / (int) right;
+        } else if (left instanceof Double && right instanceof Double) {
+          return (double) left / (double) right;
+        }
+      case STAR:
+        checkNumberOperands(expr.getOperator(), left, right);
+        if (left instanceof Integer && right instanceof Integer) {
+          return (int) left * (int) right;
+        } else if (left instanceof Double && right instanceof Double) {
+          return (double) left * (double) right;
+        }
+      case BANG_EQUAL:
+        return !isEqual(left, right);
+      case EQUAL_EQUAL:
+        return isEqual(left, right);
+    }
+
+    // Unreachable.
+    return null;
+  }
+
+  @Override
   public Object visitCallExpr(Call expr) {
     Object callee = evaluate(expr.getCallee());
 
@@ -118,6 +205,34 @@ public class Interpreter implements ExprVisitor<Object>, StmtVisitor<Void> {
     }
   }
 
+  private boolean isTruthy(Object object) {
+    if (object == null) {
+      return false;
+    }
+    if (object instanceof Boolean) {
+      return (boolean) object;
+    }
+    return true;
+  }
+
+  private boolean isEqual(Object a, Object b) {
+    // TODO this might not work?
+    return a.equals(b);
+  }
+
+  private void checkNumberOperands(Token operator,
+      Object left, Object right) {
+    if (left instanceof Double && right instanceof Double) {
+      return;
+    }
+
+    if (left instanceof Integer && right instanceof Integer) {
+      return;
+    }
+
+    throw new RuntimeError(operator, "Operands must both be integers or floats.");
+  }
+
   // TODO implement visitor methods
 
   @Override
@@ -147,21 +262,6 @@ public class Interpreter implements ExprVisitor<Object>, StmtVisitor<Void> {
 
   @Override
   public Object visitLogicalExpr(Logical expr) {
-    return null;
-  }
-
-  @Override
-  public Object visitBinaryExpr(Binary expr) {
-    return null;
-  }
-
-  @Override
-  public Object visitUnaryExpr(Unary expr) {
-    return null;
-  }
-
-  @Override
-  public Object visitGroupingExpr(Grouping expr) {
     return null;
   }
 
