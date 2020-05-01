@@ -150,6 +150,11 @@ public class Scanner {
         string();
         break;
       case '\n':
+        // handle multiple blank lines
+        while (peek() == '\n') {
+          incrementLine();
+          advance();
+        }
         incrementLine();
         addToken(NEWLINE);
         break;

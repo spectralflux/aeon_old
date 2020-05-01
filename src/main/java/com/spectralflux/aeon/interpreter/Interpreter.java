@@ -16,6 +16,7 @@ import com.spectralflux.aeon.syntax.expression.Logical;
 import com.spectralflux.aeon.syntax.expression.Set;
 import com.spectralflux.aeon.syntax.expression.Unary;
 import com.spectralflux.aeon.syntax.expression.Variable;
+import com.spectralflux.aeon.syntax.statement.Block;
 import com.spectralflux.aeon.syntax.statement.Expression;
 import com.spectralflux.aeon.syntax.statement.Function;
 import com.spectralflux.aeon.syntax.statement.Let;
@@ -38,6 +39,10 @@ public class Interpreter implements ExprVisitor<Object>, StmtVisitor<Void> {
   public Interpreter(ErrorHandler errorHandler) {
     this.errorHandler = errorHandler;
     defineNativeFunctions();
+  }
+
+  void resolve(Expr expr, int depth) {
+    locals.put(expr, depth);
   }
 
   private void defineNativeFunctions() {
@@ -231,6 +236,12 @@ public class Interpreter implements ExprVisitor<Object>, StmtVisitor<Void> {
     }
 
     throw new RuntimeError(operator, "Operands must both be integers or floats.");
+  }
+
+  @Override
+  public Void visitBlockStmt(Block stmt) {
+    executeBlock(stmt.getStatements(), new Environment(environment));
+    return null;
   }
 
   // TODO implement visitor methods

@@ -6,3 +6,7 @@ print(false)
 #* multiline
     comment! *#
 print('Hallå')
+
+
+# handle some blank new lines above
+print('dsfdsf' + ' fsdfsdfd!')
