@@ -79,14 +79,20 @@ public class Parser {
 
   private Stmt letDeclaration() {
     Token name = consume(IDENTIFIER, "Expect variable name.");
-
+    Token typeDef = null;
     Expr initializer = null;
+
+    // putting this in an if statement opens the option for type inferencing
+    if (match(AS)) {
+      typeDef = consume(IDENTIFIER, "Expect type for variable.");
+    }
+
     if (match(EQUAL)) {
       initializer = expression();
     }
 
     consume(NEWLINE, "Expect newline after variable declaration.");
-    return new Let(name, initializer);
+    return new Let(name, typeDef, initializer);
   }
 
   private Function function(String kind) {
@@ -136,7 +142,7 @@ public class Parser {
 
     return new Expression(expr);
   }
-
+  
   private Expr expression() {
     return assignment();
   }
@@ -145,6 +151,7 @@ public class Parser {
     Expr expr = or();
 
     if (match(EQUAL)) {
+      Token typeDef = twicePrevious();
       Token equals = previous();
       Expr value = assignment();
 
@@ -372,6 +379,10 @@ public class Parser {
 
   private Token previous() {
     return tokens.get(current - 1);
+  }
+
+  private Token twicePrevious() {
+    return tokens.get(current - 2);
   }
 
   private void synchronize() {

@@ -96,6 +96,14 @@ public class Aeon {
             return;
         }
 
+        TypeChecker typeChecker = new TypeChecker(errorHandler);
+        typeChecker.checkTypes();
+
+        // Stop if there was a type checking error.
+        if (errorHandler.hadError()) {
+            return;
+        }
+
         interpreter.interpret(statements);
     }
 
