@@ -181,46 +181,58 @@ public class Resolver implements ExprVisitor<Object>, StmtVisitor<Void>  {
         return null;
     }
 
-
-    // TODO unimplemented methods
-
     @Override
-    public Object visitLiteralExpr(Literal expr) {
+    public Void visitCallExpr(Call expr) {
+        resolve(expr.getCallee());
+
+        for (Expr argument : expr.getArguments()) {
+            resolve(argument);
+        }
+
         return null;
     }
 
     @Override
-    public Object visitGetExpr(Get expr) {
+    public Void visitGetExpr(Get expr) {
+        resolve(expr.getObject());
         return null;
     }
 
     @Override
-    public Object visitSetExpr(Set expr) {
+    public Void visitSetExpr(Set expr) {
+        resolve(expr.getValue());
+        resolve(expr.getObject());
         return null;
     }
 
     @Override
-    public Object visitCallExpr(Call expr) {
+    public Void visitGroupingExpr(Grouping expr) {
+        resolve(expr.getExpression());
         return null;
     }
 
     @Override
-    public Object visitLogicalExpr(Logical expr) {
+    public Void visitLiteralExpr(Literal expr) {
         return null;
     }
 
     @Override
-    public Object visitBinaryExpr(Binary expr) {
+    public Void visitLogicalExpr(Logical expr) {
+        resolve(expr.getLeft());
+        resolve(expr.getRight());
         return null;
     }
 
     @Override
-    public Object visitUnaryExpr(Unary expr) {
+    public Void visitBinaryExpr(Binary expr) {
+        resolve(expr.getLeft());
+        resolve(expr.getRight());
         return null;
     }
 
     @Override
-    public Object visitGroupingExpr(Grouping expr) {
+    public Void visitUnaryExpr(Unary expr) {
+        resolve(expr.getRight());
         return null;
     }
 

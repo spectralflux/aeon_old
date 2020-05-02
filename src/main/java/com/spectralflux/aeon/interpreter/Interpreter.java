@@ -1,6 +1,7 @@
 package com.spectralflux.aeon.interpreter;
 
 import com.spectralflux.aeon.callable.AeonCallable;
+import com.spectralflux.aeon.callable.AeonFunction;
 import com.spectralflux.aeon.error.ErrorHandler;
 import com.spectralflux.aeon.error.RuntimeError;
 import com.spectralflux.aeon.lib.Print;
@@ -244,6 +245,25 @@ public class Interpreter implements ExprVisitor<Object>, StmtVisitor<Void> {
     return null;
   }
 
+  @Override
+  public Object visitAssignExpr(Assign expr) {
+    Object value = evaluate(expr.getValue());
+    Integer distance = locals.get(expr);
+    if (distance != null) {
+      environment.assignAt(distance, expr.getName(), value);
+    } else {
+      globals.assign(expr.getName(), value);
+    }
+    return value;
+  }
+
+  @Override
+  public Void visitFunctionStmt(Function stmt) {
+    AeonFunction function = new AeonFunction(stmt, environment);
+    environment.define(stmt.getName().getLexeme(), function);
+    return null;
+  }
+
   // TODO implement visitor methods
 
   @Override
@@ -253,16 +273,6 @@ public class Interpreter implements ExprVisitor<Object>, StmtVisitor<Void> {
 
   @Override
   public Object visitSetExpr(Set expr) {
-    return null;
-  }
-
-  @Override
-  public Object visitAssignExpr(Assign expr) {
-    return null;
-  }
-
-  @Override
-  public Void visitFunctionStmt(Function stmt) {
     return null;
   }
 

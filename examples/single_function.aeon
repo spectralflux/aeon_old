@@ -1,3 +1,4 @@
 fn my_function():
-  print('Hello')
+  print('Im in my function!')
+
 my_function()
