@@ -6,10 +6,11 @@ in order:
 1. Add functions DONE
 2. Add 'print' native function DONE
 3. Get interpreter working DONE
-4. Interpreter has many empty visitor methods, fill these in
-4. Add classes
-5. Add class inheritance model
+4. Variable assignment and variable use (let vs var also)
+5. Interpreter has many empty visitor methods, fill these in
+6. static typing ('as' keyword, come up with nice syntax for static return indication)
+7. Add classes
+8. Add class inheritance model
 
 BUGS
-* Resolver not resolving defined function into scope, so interpreter barfs thinking identifier
-    doesn't exist.
+* loose spaces on blank lines break the parser
