@@ -278,6 +278,12 @@ public class Interpreter implements ExprVisitor<Object>, StmtVisitor<Void> {
 
   @Override
   public Void visitLetStmt(Let stmt) {
+    Object value = null;
+    if (stmt.getInitializer() != null) {
+      value = evaluate(stmt.getInitializer());
+    }
+
+    environment.define(stmt.getName().getLexeme(), value);
     return null;
   }
 
