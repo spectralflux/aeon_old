@@ -1,0 +1,3 @@
+let greet as string = 'Hello'
+let name as string = 'Jim'
+print(greet + ', ' + name)
