@@ -16,3 +16,6 @@ in order:
 BUGS
 * let is mutable
 * typing is ignored
+
+NOTES
+* Maybe check mypy checker to see a type checking sweep in action: https://github.com/python/mypy/blob/master/mypy/checker.py
